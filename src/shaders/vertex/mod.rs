@@ -1,3 +1,3 @@
-pub mod color_2d;
-pub mod color_2d_gradient;
-pub mod graph_3d;
+pub const SHADER_COLOR_2D: &str = include_str!("./color_2d.shader");
+pub const SHADER_COLOR_2D_GRADIENT: &str = include_str!("./color_2d_gradient.shader");
+pub const SHADER_GRAPH_3D: &str = include_str!("./graph_3d.shader");

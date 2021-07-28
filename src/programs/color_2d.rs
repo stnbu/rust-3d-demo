@@ -1,8 +1,8 @@
+use super::super::common_funcs as cf;
+use js_sys::WebAssembly;
 use wasm_bindgen::JsCast;
 use web_sys::WebGlRenderingContext as GL;
 use web_sys::*;
-use js_sys::WebAssembly;
-use super::super::common_funcs as cf;
 
 #[allow(dead_code)]
 pub struct Color2D {
@@ -19,9 +19,10 @@ impl Color2D {
     pub fn new(gl: &WebGlRenderingContext) -> Self {
         let program = cf::link_program(
             &gl,
-            super::super::shaders::vertex::color_2d::SHADER,
-            super::super::shaders::fragment::color_2d::SHADER,
-        ).unwrap();
+            super::super::shaders::vertex::SHADER_COLOR_2D,
+            super::super::shaders::fragment::SHADER_COLOR_2D,
+        )
+        .unwrap();
 
         let vertices_rect: [f32; 12] = [
             0., 1., // x, y
@@ -73,10 +74,10 @@ impl Color2D {
 
         gl.uniform4f(
             Some(&self.u_color),
-            0., //r
-            0.5,//g
-            0.5,//b
-            1.0,//a
+            0.,  //r
+            0.5, //g
+            0.5, //b
+            1.0, //a
         );
 
         gl.uniform1f(Some(&self.u_opacity), 1.);

@@ -1,8 +1,8 @@
+use super::super::common_funcs as cf;
+use js_sys::WebAssembly;
 use wasm_bindgen::JsCast;
 use web_sys::WebGlRenderingContext as GL;
 use web_sys::*;
-use js_sys::WebAssembly;
-use super::super::common_funcs as cf;
 
 #[allow(dead_code)]
 pub struct Color2DGradient {
@@ -20,9 +20,10 @@ impl Color2DGradient {
     pub fn new(gl: &WebGlRenderingContext) -> Self {
         let program = cf::link_program(
             &gl,
-            super::super::shaders::vertex::color_2d_gradient::SHADER,
-            super::super::shaders::fragment::varying_color_from_vertex::SHADER,
-        ).unwrap();
+            super::super::shaders::vertex::SHADER_COLOR_2D_GRADIENT,
+            super::super::shaders::fragment::SHADER_VARYING_COLOR_FROM_VERTEX,
+        )
+        .unwrap();
 
         let vertices_rect: [f32; 8] = [
             0., 1., // x, y
@@ -53,7 +54,7 @@ impl Color2DGradient {
         let indices_location = indices_rect.as_ptr() as u32 / 2;
         let indices_array = js_sys::Uint16Array::new(&indices_memory_buffer).subarray(
             indices_location,
-            indices_location + indices_rect.len() as u32
+            indices_location + indices_rect.len() as u32,
         );
         let buffer_indices = gl.create_buffer().unwrap();
         gl.bind_buffer(GL::ELEMENT_ARRAY_BUFFER, Some(&buffer_indices));
@@ -106,9 +107,15 @@ impl Color2DGradient {
             .unwrap()
             .buffer();
         let color_vals_location = colors.as_ptr() as u32 / 4;
-        let color_vals_array = js_sys::Float32Array::new(&colors_memory_buffer)
-            .subarray(color_vals_location, color_vals_location + colors.len() as u32);
-        gl.buffer_data_with_array_buffer_view(GL::ARRAY_BUFFER, &color_vals_array, GL::DYNAMIC_DRAW);
+        let color_vals_array = js_sys::Float32Array::new(&colors_memory_buffer).subarray(
+            color_vals_location,
+            color_vals_location + colors.len() as u32,
+        );
+        gl.buffer_data_with_array_buffer_view(
+            GL::ARRAY_BUFFER,
+            &color_vals_array,
+            GL::DYNAMIC_DRAW,
+        );
 
         gl.uniform1f(Some(&self.u_opacity), 1.);
 
